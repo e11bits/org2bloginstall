@@ -8,14 +8,15 @@ EMACSCFG="$HOME/.emacs"
 EMACSDIR="$HOME/.emacs.d"
 AUTHCFG="$HOME/.netrc"
 O2BDIR="$EMACSDIR/org2blog"
+O2BREPO="http://github.com/punchagan/org2blog.git"
+O2BWEB="https://github.com/org2blog/org2blog"
+O2BPATCH="org2blog.patch"
 XMLRPCDIR="$EMACSDIR/xml-rpc-el"
+XMLRPCREPO="https://github.com/hexmode/xml-rpc-el.git"
 METAWEBLOGDIR="$EMACSDIR/metaweblog"
+METAWEBLOGREPO="https://github.com/org2blog/metaweblog.git"
 CFGSECSTART=";; org2blog config start"
 CFGSECEND=";; org2blog config end"
-O2BREPO="http://github.com/punchagan/org2blog.git"
-METAWEBLOGREPO="https://github.com/org2blog/metaweblog.git"
-XMLRPCREPO="https://github.com/hexmode/xml-rpc-el.git"
-PATCHFILE="org2blog.patch"
 
 function tooOld {
     ageInDays=$(( ($(date +%s) - $(date --date=$LAUNCHDATE +%s)) / (60 * 60 * 24) ))
@@ -39,14 +40,15 @@ function addEmacsCfg {
 }
 
 cat <<EOF
+
 This script will try to do the following things:
 
  1) Checkout the latest version of org2blog, metaweblog and xml-rpc-el into $EMACSDIR
- 2) Patch xml-rpc.el using $PATCHFILE so that Unicode characters work in blog posts
+ 2) Patch xml-rpc.el using $O2BPATCH so that Unicode characters work in blog posts
  3) Add credentials of your Wordpress blog to $AUTHCFG
  4) Add necessary configurations for org2blog to $EMACSCFG
 
-Detailed information on this can be found at https://github.com/org2blog/org2blog
+Detailed installation information can be found at $O2BWEB
 
 EOF
 
@@ -67,7 +69,7 @@ $GIT clone $O2BREPO $O2BDIR
 $GIT clone $METAWEBLOGREPO $METAWEBLOGDIR
 $GIT clone $XMLRPCREPO $XMLRPCDIR
 
-$PATCH --directory=$XMLRPCDIR --strip=1 --forward < $PATCHFILE
+$PATCH --directory=$XMLRPCDIR --strip=1 --forward < $O2BPATCH
 
 default="wordpress"
 echo -n "Name of blog [$default]: "
@@ -115,4 +117,13 @@ cat >> $EMACSCFG <<EOF
 EOF
 addEmacsCfg "$CFGSECEND"
 
+cat <<EOF
+
+Now (re)start emacs and check the installation by using
+
+    	      M-x org2blog/wp-login
+
+Detailed usage information can be found at $O2BWEB
+
+EOF
 exit 0
