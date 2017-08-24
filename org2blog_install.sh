@@ -1,5 +1,6 @@
 #!/bin/bash
-
+LAUNCHDATE="170824"
+BESTBEFORE=365 # days
 GIT=git
 SED=sed
 PATCH=patch
@@ -11,9 +12,13 @@ XMLRPCDIR="$EMACSDIR/xml-rpc-el"
 METAWEBLOGDIR="$EMACSDIR/metaweblog"
 CFGSECSTART=";; org2blog config start"
 CFGSECEND=";; org2blog config end"
+O2BREPO="http://github.com/punchagan/org2blog.git"
+METAWEBLOGREPO="https://github.com/org2blog/metaweblog.git"
+XMLRPCREPO="https://github.com/hexmode/xml-rpc-el.git"
+PATCHFILE="org2blog.patch"
 
 function tooOld {
-    ageInDays=$(( ($(date +%s) - $(date --date="170823" +%s)) / (60 * 60 * 24) ))
+    ageInDays=$(( ($(date +%s) - $(date --date=$LAUNCHDATE +%s)) / (60 * 60 * 24) ))
     return $(( $ageInDays < 365 ))
 }
 
@@ -41,6 +46,8 @@ This script will try to do the following things:
  3) Add credentials of your Wordpress blog to $AUTHCFG
  4) Add necessary configurations for org2blog to $EMACSCFG
 
+Detailed information on this can be found at https://github.com/org2blog/org2blog
+
 EOF
 
 confirmDo true "Continue?" ""
@@ -53,15 +60,14 @@ which $PATCH > /dev/null || ( echo "Can't find $PATCH executable!" && exit 1 )
 
 confirmDo "[ ! -d $EMACSDIR ]" "$EMACSDIR does not exist! Create it?" "mkdir $EMACSDIR"
 confirmDo "[ -d $O2BDIR ]" "$O2BDIR does already exist! Remove it?" "rm -rf $O2BDIR"
-exit
 confirmDo "[ -d $XMLRPCDIR ]" "$XMLRPCDIR does already exist! Remove it?" "rm -rf $XMLRPCDIR"
 confirmDo "[ -d $METAWEBLOGDIR ]" "$METAWEBLOGDIR does already exist! Remove it?" "rm -rf $METAWEBLOGDIR"
 
-$GIT clone http://github.com/punchagan/org2blog.git $O2BDIR
-$GIT clone https://github.com/org2blog/metaweblog.git $METAWEBLOGDIR
-$GIT clone https://github.com/hexmode/xml-rpc-el.git $XMLRPCDIR
+$GIT clone $O2BREPO $O2BDIR
+$GIT clone $METAWEBLOGREPO $METAWEBLOGDIR
+$GIT clone $XMLRPCREPO $XMLRPCDIR
 
-$PATCH --directory=$XMLRPCDIR --strip=1 --forward < org2blog.patch
+$PATCH --directory=$XMLRPCDIR --strip=1 --forward < $PATCHFILE
 
 default="wordpress"
 echo -n "Name of blog [$default]: "
