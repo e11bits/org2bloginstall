@@ -1,5 +1,5 @@
 #!/bin/bash
-LAUNCHDATE="170824"
+LAUNCHDATE="170829"
 BESTBEFORE=365 # days
 GIT=git
 SED=sed
@@ -15,6 +15,8 @@ XMLRPCDIR="$EMACSDIR/xml-rpc-el"
 XMLRPCREPO="https://github.com/hexmode/xml-rpc-el.git"
 METAWEBLOGDIR="$EMACSDIR/metaweblog"
 METAWEBLOGREPO="https://github.com/org2blog/metaweblog.git"
+HTMLIZEDIR="$EMACSDIR/emacs-htmlize"
+HTMLIZEREPO="https://github.com/hniksic/emacs-htmlize.git"
 CFGSECSTART=";; org2blog config start"
 CFGSECEND=";; org2blog config end"
 
@@ -64,10 +66,12 @@ confirmDo "[ ! -d $EMACSDIR ]" "$EMACSDIR does not exist! Create it?" "mkdir $EM
 confirmDo "[ -d $O2BDIR ]" "$O2BDIR does already exist! Remove it?" "rm -rf $O2BDIR"
 confirmDo "[ -d $XMLRPCDIR ]" "$XMLRPCDIR does already exist! Remove it?" "rm -rf $XMLRPCDIR"
 confirmDo "[ -d $METAWEBLOGDIR ]" "$METAWEBLOGDIR does already exist! Remove it?" "rm -rf $METAWEBLOGDIR"
+confirmDo "[ -d $HTMLIZEDIR ]" "$HTMLIZEDIR does already exist! Remove it?" "rm -rf $HTMLIZEDIR"
 
 $GIT clone $O2BREPO $O2BDIR
 $GIT clone $METAWEBLOGREPO $METAWEBLOGDIR
 $GIT clone $XMLRPCREPO $XMLRPCDIR
+$GIT clone $HTMLIZEREPO $HTMLIZEDIR
 
 $PATCH --directory=$XMLRPCDIR --strip=1 --forward < $O2BPATCH
 
@@ -96,6 +100,7 @@ EOF
 confirmDo "[ ! -f $EMACSCFG ]" "$EMACSCFG does not exist! Create it?" "touch $EMACSCFG"
 sed -i "/$CFGSECSTART/,/$CFGSECEND/d" $EMACSCFG
 addEmacsCfg "$CFGSECSTART"
+addEmacsCfg "(setq load-path (cons \"$HTMLIZEDIR\" load-path))"
 addEmacsCfg "(setq load-path (cons \"$XMLRPCDIR\" load-path))"
 addEmacsCfg "(setq load-path (cons \"$METAWEBLOGDIR\" load-path))"
 addEmacsCfg "(setq load-path (cons \"$O2BDIR\" load-path))"
