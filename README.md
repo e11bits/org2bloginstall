@@ -1,5 +1,5 @@
 # org2bloginstall
-Small script to help with the installation of org2blog
+Small script to help with the installation of [org2blog](https://github.com/org2blog/org2blog) for [Org mode](http://orgmode.org) and [Emacs](https://www.gnu.org/software/emacs)
 
 # This script will try to do the following things:
 
